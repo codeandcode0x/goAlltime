@@ -1,3 +1,11 @@
+bin
+proxy
+test
+logs
+backup
+conf
+
+
 # Binaries for programs and plugins
 *.exe
 *.exe~
