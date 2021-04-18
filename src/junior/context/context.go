@@ -1,29 +1,25 @@
-package main
+/**
+* 多协程任务管理
+*/
+
+package context
 
 import (
 	"context"
-	"strconv"
-	"fmt"
+	"log"
 )
 
-
-func main() {
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-	i := 0
-	for {
-		generateJob(ctx, "itask" + strconv.Itoa(i))
-		i++
-		if i> 10000 {
-			break
-		}
-	}
-
-	// time.Sleep(10*time.Second)
+//生成 job with value
+func GenerateJobWithValue(parent context.Context, value string) {
+	ch := make(chan int, 0)
+	valueKey := "value"
+	ctx := context.WithValue(parent, valueKey, value)
+	go doTaskWithValue(ch, ctx, valueKey)
+	<-ch
 }
 
-//生成 job
-func generateJob(parent context.Context, value string) {
+//生成 job with cancel
+func GenerateJob(parent context.Context, value string) {
 	ch := make(chan int, 0)
 	ctx, cancel := context.WithCancel(parent)
 	go doTask(ch, ctx, value)
@@ -31,17 +27,26 @@ func generateJob(parent context.Context, value string) {
 	cancel()
 }
 
-
 //执行任务
 func doTask(ch chan<- int, ctx context.Context, job string) {
 	select {
 	case <-ctx.Done():
-		fmt.Println("job is closed", job)
+		log.Println("job is closed", job)
 		return
 	default:
-		fmt.Println(job, "is running")
+		log.Println(job, "is running")
 		ch <- 1
 	}
+}
+
+//带参数 context, 执行任务
+func doTaskWithValue(ch chan<- int, ctx context.Context, valueKey string) {
+    if v := ctx.Value(valueKey); v != nil {
+        log.Println("found value:", v, ctx.Value(valueKey))
+    }else{
+    	log.Println("key not found:", valueKey)
+    }
+    ch <- 1
 }
 
 
