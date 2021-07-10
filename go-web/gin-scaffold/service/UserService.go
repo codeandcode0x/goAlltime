@@ -23,13 +23,16 @@ func (s *UserService) FindAllUsers() (interface{}, error) {
 	return users, err
 }
 
-func (s *UserService) FindAllUsersByCount(count int) ([]model.User, error) {
-	return s.getSvc().DAO.FindAllByCount(count)
+// find all Jobs with key
+func (s *UserService) FindUserByEmail(email string) (*model.User, error) {
+	user := model.User{}
+	return &user, s.getSvc().DAO.FindByKeys(&user, map[string]interface{}{"email": email})
 }
 
 // find user by id
 func (s *UserService) FindUserById(id uint64) (*model.User, error) {
-	return s.getSvc().DAO.FindByID(id)
+	user := model.User{}
+	return &user, s.getSvc().DAO.FindByKeys(&user, map[string]interface{}{"id": id})
 }
 
 // find all Jobs with key

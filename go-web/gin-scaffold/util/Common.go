@@ -27,10 +27,12 @@ func InitConfig() {
 
 // Pagination
 type Pagination struct {
-	PageSize    int   `form:"pagesize" json:"pagesize"`
-	CurrentPage int   `form:"currentpage" json:"currentpage"`
-	TotalRows   int64 `json:"totalrows"`
-	TotalPages  int64 `json:"totalpages"`
+	PageSize        int   `form:"pagesize" json:"pagesize"`
+	CurrentPage     int   `form:"currentpage" json:"currentpage"`
+	TotalRows       int64 `json:"totalrows"`
+	TotalPages      int64 `json:"totalpages"`
+	PreCurrentPage  int   `form:"currentpage" json:"precurrentpage"`
+	NextCurrentPage int   `form:"currentpage" json:"nextcurrentpage"`
 }
 
 // message

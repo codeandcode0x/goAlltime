@@ -3,6 +3,7 @@ module gin-scaffold
 go 1.16
 
 require (
+	github.com/codeandcode0x/traceandtrace-go v1.0.22
 	github.com/fvbock/endless v0.0.0-20170109170031-447134032cb6
 	github.com/gin-contrib/sessions v0.0.3
 	github.com/gin-gonic/gin v1.7.1
@@ -15,6 +16,7 @@ require (
 	github.com/swaggo/gin-swagger v1.3.0
 	github.com/swaggo/swag v1.7.0
 	github.com/vearne/golib v0.1.4
+	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9
 	golang.org/x/net v0.0.0-20210525063256-abc453219eb5
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
 	golang.org/x/sys v0.0.0-20210630005230-0f9fa26af87c // indirect

@@ -3,7 +3,6 @@
 <div class="container">
 
   
-  
   <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
   <h1 class="display-4">用户列表</h1>
   <p class="lead"></p>
@@ -16,19 +15,6 @@
           <a href="/user/add" type="button" class="btn btn-sm btn-block btn-outline-primary">
             添加用户
           </a>
-        </caption>
-        <caption class="col-6 offset-3">
-        每页展示{{ .pages.PageSize }}条记录
-        第{{ .pages.CurrentPage }}页
-        共{{ .pages.TotalRows }}条记录
-        共{{ .pages.TotalPages }}页
-        {{ if gt .pages.CurrentPage 1 }}
-        <a href="/users?currentpage={{ .pages.PreCurrentPage}}">上一页</a>
-        {{ end }}
-
-        {{ if lt .pages.CurrentPage .pages.TotalPages }}
-        <a href="/users?currentpage={{ .pages.NextCurrentPage }}">下一页</a>
-        {{ end }}
         </caption>
         <thead>
           <tr>
@@ -69,6 +55,7 @@
 
     </div>
   </div>
+
 
 
 {{template "footer"}}

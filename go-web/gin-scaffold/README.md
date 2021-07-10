@@ -1,6 +1,15 @@
 # Gin scaffold
 This scaffold based [gin](https://github.com/gin-gonic/gin) web framework, you can use it create web project quickly.
 
+# Awesome support
+- ORM encapsulation (gorm used, model interface can be inherited design, DAO layer can be conveniently encapsulated)
+- Tracing (support link tracking)
+- Http TimeOut (support Http request timeout interrupt)
+
+# Deploy
+- Docker compose
+- Helm Chart
+
 # Quick start
 
 ```sh
