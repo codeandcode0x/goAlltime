@@ -1,0 +1,107 @@
+{{template "header"}}
+
+<div class="container">
+
+  
+  <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+  <h1 class="display-4">电影列表</h1>
+  <p class="lead"></p>
+  </div>
+
+
+  <div class="card-deck mb-3">
+
+    {{range $i, $movie := .movies}}
+
+    <div class="card mb-4 shadow-sm">
+      <div class="card-header">
+        <h4 class="my-0 font-weight-normal text-center">{{$movie.Name}}</h4>
+      </div>
+      <div class="card-body">
+        <div class="list-unstyled mt-3 mb-4 text-center">
+          <img src="{{$movie.Image}}" style="width: 250px" />
+        </div>
+
+        <div class="list-unstyled mt-3 mb-4">
+         <span style="text-align: left; font-size: 14px;">{{$movie.Minfo}}</span>
+        </div>
+
+        <table class="col-12">
+          <tr>
+            <td style="border: none;">
+              <form action="/movie/update" method="post" class="form-horizontal" role="form" enctype="application/x-www-form-urlencoded">
+              <input type="hidden" name="id" id="id" value="{{ $movie.ID }}">
+              <button type="button" class="btn btn-sm btn-block btn-outline-primary"> 更新 </button>
+              </form>
+            </td>
+            <td style="border: none;">
+              <form action="/movie/delete" method="post" class="form-horizontal" role="form" enctype="application/x-www-form-urlencoded">
+              <input type="hidden" name="id" id="id" value="{{ $movie.ID }}">
+              <button type="submit" class="btn btn-sm btn-block btn-outline-primary"> 删除 </button>
+              </form>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    {{end}}
+   
+    <div class="card mb-4 shadow-sm">
+      <a href="/movie/add" type="button" class="btn btn-sm btn-block btn-outline-primary"> 添加电影 </a>
+    </div>
+  </div>
+
+
+  <div class="card-deck mb-3 text-center">
+    <div class="card mb-4 shadow-sm">
+      <table class="table table-bordered">
+        <caption class="col-6 offset-3">
+          <a href="/user/add" type="button" class="btn btn-sm btn-block btn-outline-primary">
+            添加用户
+          </a>
+        </caption>
+        <thead>
+          <tr>
+            <th>姓名</th>
+            <th>邮箱</th>
+            <th>角色</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{range $i, $user := .users}}
+          <tr>
+            <td>{{ $user.Name }}</td>
+            <td>{{ $user.Email }}</td>
+            <td>{{ $user.Role }}</td>
+            <td>
+              <table class="col-12">
+                <tr>
+                  <td style="border: none;">
+                    <form action="/user/update" method="post" class="form-horizontal" role="form" enctype="application/x-www-form-urlencoded">
+                    <input type="hidden" name="uid" id="uid" value="{{ $user.ID }}">
+                    <button type="button" class="btn btn-sm btn-block btn-outline-primary"> 更新 </button>
+                    </form>
+                  </td>
+                  <td style="border: none;">
+                    <form action="/user/delete" method="post" class="form-horizontal" role="form" enctype="application/x-www-form-urlencoded">
+                    <input type="hidden" name="id" id="id" value="{{ $user.ID }}">
+                    <button type="submit" class="btn btn-sm btn-block btn-outline-primary"> 删除 </button>
+                    </form>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          {{end}}
+        </tbody>
+      </table>
+
+    </div>
+  </div>
+
+
+
+{{template "footer"}}
+

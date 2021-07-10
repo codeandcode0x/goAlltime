@@ -1,0 +1,12 @@
+Dockerfile
+.dockerignore
+.gitignore
+.directory
+.keep
+BUILD.variables
+README.md
+dev.env
+entrypoint.sh
+bin/
+docker/
+var/

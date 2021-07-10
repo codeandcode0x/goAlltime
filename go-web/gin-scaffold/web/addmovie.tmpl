@@ -1,0 +1,71 @@
+{{template "header"}}
+
+<div class="container">
+
+  
+  <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+  <h1 class="display-4">添加电影</h1>
+  <p class="lead"></p>
+  </div>
+
+  <div class=" mb-3">
+    <div class=" mb-4">
+      <div class="col-12 col-md">
+       <form action="/movie/create" method="post" class="form-horizontal" role="form" enctype="application/x-www-form-urlencoded">
+
+          <div class="form-group">
+            <label for="name" class="col-sm-2 control-label">电影名称</label>
+            <div class="col-sm-12">
+              <input type="text" class="form-control" id="name" name="name" placeholder="请输入电影名称">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="image" class="col-sm-2 control-label">电影海报</label>
+            <div class="col-sm-12">
+              <input type="text" class="form-control" id="image" name="image" placeholder="请输入图片地址">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="actors" class="col-sm-2 control-label">演员</label>
+            <div class="col-sm-12">
+              <input type="text" class="form-control" id="actors" name="actors" placeholder="请输入演员">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="mtype" class="col-sm-2 control-label">影片类型</label>
+            <div class="col-sm-12">
+              <input type="text" class="form-control" id="mtype" name="mtype" placeholder="请输入影片类型">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="minfo" class="col-sm-2 control-label">影片简介</label>
+            <div class="col-sm-12">
+              <input type="text" class="form-control" id="minfo" name="minfo" placeholder="请输入影片简介">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="mtime" class="col-sm-2 control-label">上映时间</label>
+            <div class="col-sm-12">
+              <input type="text" class="form-control" id="mtime" name="mtime" placeholder="请输入影片上映时间">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-12">
+              <button type="submit" class="btn btn-sm btn-block btn-outline-primary">提 交</button>
+            </div>
+          </div>
+       </form>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+{{template "footer"}}
+

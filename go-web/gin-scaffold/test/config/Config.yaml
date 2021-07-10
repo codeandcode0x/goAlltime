@@ -1,0 +1,24 @@
+# default run mode
+RUN_MODE: 'dev'
+# default db host
+DB_HOST: '127.0.0.1'
+# default db port
+DB_PORT: '3306'
+# default db name
+DB_NAME: 'gin_scaffold'
+# default db name
+DB_USER: 'root'
+# default db name
+DB_PASSWD: 'root123'
+# db log
+DB_LOGMODE: 'Warn'
+# debug mode
+DEBUG_MODE: true
+# Log Level
+LOG_LEVEL: 'debug'
+# HTTP Req Timeout
+TIME_DURATION: 10
+# page size
+PAGE_SIZE: 20
+
+
