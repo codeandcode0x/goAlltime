@@ -2,6 +2,7 @@ package controller
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"gin-scaffold/middleware"
 	"gin-scaffold/model"
@@ -221,7 +222,46 @@ func (uc *UserController) SearchUsersByKeys(c *gin.Context) {
 		keyOpts["role"] = roleOpt
 	}
 
-	users, err := uc.getCtl().Service.SearchUserByPagesWithKeys(keys, keyOpts, currentPageInt, pageSizeInt, &totalRows)
+	// data option setting
+	dataOrder, dataOrderExist := c.GetQuery("dataOrder")
+	if !dataOrderExist {
+		dataOrder = "id desc"
+	}
+
+	dataSelect, dataSelectExist := c.GetQuery("dataSelect")
+	if !dataSelectExist {
+		dataSelect = ""
+	}
+
+	dataWhereMap := map[string]interface{}{}
+	dataWhere, dataWhereExist := c.GetQuery("dataWhere")
+	if dataWhereExist {
+		err := json.Unmarshal([]byte(dataWhere), &dataWhereMap)
+		if err != nil {
+			util.SendError(c, err.Error())
+			return
+		}
+	}
+
+	dataLimitInt := 0
+	dataLimit, dataLimitExist := c.GetQuery("dataLimit")
+	if dataLimitExist {
+		dataLimitInt, _ = strconv.Atoi(dataLimit)
+	}
+
+	daoOpt := model.DAOOption{
+		Select: dataSelect,
+		Order:  dataOrder,
+		Where:  dataWhereMap, //map[string]interface{}{},
+		Limit:  dataLimitInt,
+	}
+
+	users, err := uc.getCtl().Service.SearchUserByPagesWithKeys(keys,
+		keyOpts,
+		currentPageInt,
+		pageSizeInt,
+		&totalRows,
+		daoOpt)
 
 	if err != nil {
 		util.SendError(c, err.Error())
@@ -247,7 +287,32 @@ func (uc *UserController) SearchUsersByKeys(c *gin.Context) {
 	})
 }
 
-func (uc *UserController) GetUserByID() {
+// get user by id
+func (uc *UserController) GetUserByID(c *gin.Context) {
+	id, exists := c.Params.Get("id")
+	if !exists {
+		util.SendError(c, "id is null")
+		return
+	}
+
+	idUint64, errConv := strconv.ParseUint(id, 10, 64)
+	if errConv != nil {
+		util.SendError(c, "id conv failed")
+		return
+	}
+
+	user, err := uc.getCtl().Service.FindUserById(idUint64)
+
+	if err != nil {
+		util.SendError(c, err.Error())
+		return
+	}
+
+	util.SendMessage(c, util.Message{
+		Code:    0,
+		Message: "OK",
+		Data:    user,
+	})
 }
 
 // add user tmpl

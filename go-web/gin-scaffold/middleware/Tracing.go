@@ -1,8 +1,6 @@
 package middleware
 
 import (
-	"log"
-
 	tracing "github.com/codeandcode0x/traceandtrace-go"
 	"github.com/gin-gonic/gin"
 )
@@ -10,7 +8,6 @@ import (
 // Tracing 中间件
 func Tracing() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		log.Println("..... tracing header1 ", c.Request.Header)
 		// add tracing
 		pctx, cancel := tracing.AddHttpTracing(
 			"ticket-manager",

@@ -20,5 +20,9 @@ LOG_LEVEL: 'debug'
 TIME_DURATION: 10
 # page size
 PAGE_SIZE: 20
+# server port
+SERVER_PORT: '8080'
+# gRPC port
+GRPC_PORT: '22530'
 
 
