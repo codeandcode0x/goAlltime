@@ -22,6 +22,7 @@ CREATE SCHEMA `gin_scaffold` DEFAULT CHARACTER SET utf8mb4 ;
 # run project
 go run main.go
 
+username/password :  admin@admin.com / admin
 ```
 
 # gRPC
