@@ -79,24 +79,34 @@ func (s *UserService) FindAllUserByPages(currentPage, pageSize int, totalRows *i
 	return users, s.getSvc().DAO.FindByPages(&users, currentPage, pageSize)
 }
 
-//search users by keys
-func (s *UserService) FindAllUserByPagesWithKeys(keys, keyOpts map[string]interface{}, currentPage, pageSize int, totalRows *int64) (interface{}, error) {
+//find users by keys
+func (s *UserService) FindAllUserByPagesWithKeys(keys,
+	keyOpts map[string]interface{},
+	currentPage, pageSize int,
+	totalRows *int64,
+	opts ...model.DAOOption) (interface{}, error) {
+	//find user
 	var users []model.User
-	err := s.getSvc().DAO.CountWithKeys(&users, totalRows, keys, keyOpts)
+	err := s.getSvc().DAO.CountWithKeys(&users, totalRows, keys, keyOpts, opts...)
 	if err != nil {
 		return users, err
 	}
 
-	return users, s.getSvc().DAO.FindByPagesWithKeys(&users, keys, currentPage, pageSize)
+	return users, s.getSvc().DAO.FindByPagesWithKeys(&users, keys, currentPage, pageSize, opts...)
 }
 
 //search users by keys
-func (s *UserService) SearchUserByPagesWithKeys(keys, keyOpts map[string]interface{}, currentPage, pageSize int, totalRows *int64) (interface{}, error) {
+func (s *UserService) SearchUserByPagesWithKeys(keys,
+	keyOpts map[string]interface{},
+	currentPage, pageSize int,
+	totalRows *int64,
+	opts ...model.DAOOption) (interface{}, error) {
+	//search user
 	var users []model.User
-	err := s.getSvc().DAO.CountWithKeys(&users, totalRows, keys, keyOpts)
+	err := s.getSvc().DAO.CountWithKeys(&users, totalRows, keys, keyOpts, opts...)
 	if err != nil {
 		return users, err
 	}
 
-	return users, s.getSvc().DAO.SearchByPagesWithKeys(&users, keys, keyOpts, currentPage, pageSize)
+	return users, s.getSvc().DAO.SearchByPagesWithKeys(&users, keys, keyOpts, currentPage, pageSize, opts...)
 }

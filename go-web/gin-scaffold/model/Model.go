@@ -23,10 +23,10 @@ type BaseDAO interface {
 	FindAll(entity interface{}, opts ...DAOOption) error
 	FindByKeys(entity interface{}, keys map[string]interface{}) error
 	FindByPages(entity interface{}, currentPage, pageSize int) error
-	FindByPagesWithKeys(entity interface{}, keys map[string]interface{}, currentPage, pageSize int) error
-	SearchByPagesWithKeys(entity interface{}, keys, keyOpts map[string]interface{}, currentPage, pageSize int) error
+	FindByPagesWithKeys(entity interface{}, keys map[string]interface{}, currentPage, pageSize int, opts ...DAOOption) error
+	SearchByPagesWithKeys(entity interface{}, keys, keyOpts map[string]interface{}, currentPage, pageSize int, opts ...DAOOption) error
 	Count(entity interface{}, count *int64) error
-	CountWithKeys(entity interface{}, count *int64, keys, keyOpts map[string]interface{}) error
+	CountWithKeys(entity interface{}, count *int64, keys, keyOpts map[string]interface{}, opts ...DAOOption) error
 }
 
 type DAOOption struct {
@@ -69,8 +69,6 @@ func (u *BaseModel) FindAll(entity interface{}, opts ...DAOOption) error {
 	tx := db.Conn.Model(entity)
 	if len(opts) > 0 {
 		beginCustomTx(tx, opts)
-	} else {
-		tx.Order("id desc")
 	}
 
 	tx.Find(entity)
@@ -90,8 +88,14 @@ func (u *BaseModel) FindByPages(entity interface{}, currentPage, pageSize int) e
 }
 
 // find by pages with keys
-func (u *BaseModel) FindByPagesWithKeys(entity interface{}, keys map[string]interface{}, currentPage, pageSize int) error {
-	result := Paginate(currentPage, pageSize).Model(entity).Where(keys).Find(entity)
+func (u *BaseModel) FindByPagesWithKeys(entity interface{},
+	keys map[string]interface{},
+	currentPage, pageSize int,
+	opts ...DAOOption) error {
+	// tx begiin
+	tx := Paginate(currentPage, pageSize).Model(entity)
+	beginCustomTx(tx, opts)
+	result := tx.Where(keys).Find(entity)
 	return result.Error
 }
 
@@ -102,16 +106,26 @@ func (u *BaseModel) Count(entity interface{}, count *int64) error {
 }
 
 // find by pages with keys
-func (u *BaseModel) CountWithKeys(entity interface{}, count *int64, keys, keyOpts map[string]interface{}) error {
+func (u *BaseModel) CountWithKeys(entity interface{},
+	count *int64,
+	keys, keyOpts map[string]interface{},
+	opts ...DAOOption) error {
+	// tx begin
 	tx := db.Conn.Model(entity)
+	beginCustomTx(tx, opts)
 	searchCustomTx(tx, keys, keyOpts)
 	tx.Count(count)
 	return tx.Error
 }
 
 // search by pages
-func (u *BaseModel) SearchByPagesWithKeys(entity interface{}, keys, keyOpts map[string]interface{}, currentPage, pageSize int) error {
+func (u *BaseModel) SearchByPagesWithKeys(entity interface{},
+	keys, keyOpts map[string]interface{},
+	currentPage, pageSize int,
+	opts ...DAOOption) error {
+	// tx begin
 	tx := Paginate(currentPage, pageSize).Model(entity)
+	beginCustomTx(tx, opts)
 	searchCustomTx(tx, keys, keyOpts)
 	tx.Find(entity)
 	return tx.Error
