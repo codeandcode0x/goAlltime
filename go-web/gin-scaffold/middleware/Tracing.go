@@ -10,7 +10,7 @@ import (
 // Tracing 中间件
 func Tracing() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		log.Println("..... tracing header1 ", c.Request.Header)
+		log.Println("..... tracing header ", c.Request.Header)
 		// add tracing
 		pctx, cancel := tracing.AddHttpTracing(
 			"ticket-manager",

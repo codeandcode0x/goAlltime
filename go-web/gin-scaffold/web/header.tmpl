@@ -32,14 +32,35 @@
     <link href="/web/assets/pricing.css" rel="stylesheet">
   </head>
   <body>
-    
+
+<form action="/user/search" method="get">
 <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm">
   <h5 class="my-0 mr-md-auto font-weight-normal">后台管理</h5>
+  <div class="row">
+    <div class="col-lg-8">
+      <input type="text" class="form-control" placeholder="Search" name="name" id="name"/>
+    </div>
+    <div class="col-lg-4">
+      <button type="submit" class="btn btn-default">提交</button>
+    </div>
+  </div>
+
   <nav class="my-2 my-md-0 mr-md-3">
     <a class="p-2 text-dark" href="/">首页</a>
     <a class="p-2 text-dark" href="/users">用户</a>
   </nav>
   <a class="btn btn-outline-primary" href="/logout">Logout</a>
 </div>
+</form>
+
+<div class="row">
+  <div class="col-lg-2 border-right" style="border-right: 1px solid rgba(0,0,0,.5);">
+    <ul class="align-items-center nav navbar-nav">
+      <li> <a href="/users"> 用户列表 </a> </li>
+    </ul>
+  </div>
+
+  <div class="col-lg-9">
+
 
 {{end}}
