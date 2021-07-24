@@ -58,7 +58,7 @@ func DBConfigInit() (string, string) {
 		dbPasswd = viper.GetString("DB_PASSWD")
 	}
 
-	log.Println("db info ...", dbName, dbHost)
+	log.Println("db connecting ...", dbName, dbHost)
 
 	// db dsn
 	dsn := dbUser + ":" + dbPasswd + "@tcp(" + dbHost + ":" + dbPort + ")/?charset=utf8mb4&parseTime=True&loc=Local"
@@ -96,12 +96,17 @@ func DBInit() {
 		Logger: DBLogger,
 	})
 
-	//check db
-	CheckDB(Conn, dbName)
 	//connect err
 	if err != nil {
 		panic(err.Error())
 	}
+
+	//check db
+	status := CheckDB(Conn, dbName)
+	if !status {
+		return
+	}
+
 	//sql db
 	sqlDB, errSql := Conn.DB()
 	//err sql
@@ -118,21 +123,24 @@ func DBInit() {
 }
 
 //check db
-func CheckDB(conn *gorm.DB, dbName string) {
-	var results []interface{}
+func CheckDB(conn *gorm.DB, dbName string) bool {
 	checkDB := "select * from information_schema.SCHEMATA where SCHEMA_NAME = '" + dbName + "'; "
 	tx := conn.Raw(checkDB)
-	tx.Scan(&results)
+	rows, _ := tx.Rows()
+	defer rows.Close()
 	checkDBError := tx.Error
-	if checkDBError == nil && len(results) == 0 {
+	if checkDBError == nil && rows.Next() {
 		Conn.Exec("CREATE DATABASE IF NOT EXISTS `" + dbName + "` DEFAULT CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_unicode_ci;")
 	} else {
-		panic(checkDBError)
+		log.Println(checkDBError.Error())
+		return false
 	}
 
 	//use db
 	useError := Conn.Exec("use " + dbName).Error
 	if useError != nil {
-		panic(useError.Error())
+		log.Println(useError.Error())
+		return false
 	}
+	return true
 }

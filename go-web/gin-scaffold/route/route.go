@@ -19,6 +19,7 @@ func DefinitionRoute(router *gin.Engine) {
 	// set run mode
 	gin.SetMode(gin.DebugMode)
 	// middleware
+	router.Use(gin.Logger(), gin.Recovery())
 	router.Use(middleware.Tracing())
 	router.Use(middleware.UseCookieSession())
 	router.Use(middleware.TimeoutHandler(time.Second * TIME_DURATION))
