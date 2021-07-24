@@ -129,7 +129,7 @@ func CheckDB(conn *gorm.DB, dbName string) bool {
 	rows, _ := tx.Rows()
 	defer rows.Close()
 	checkDBError := tx.Error
-	if checkDBError == nil && rows.Next() {
+	if checkDBError == nil && !rows.Next() {
 		Conn.Exec("CREATE DATABASE IF NOT EXISTS `" + dbName + "` DEFAULT CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_unicode_ci;")
 	} else {
 		log.Println(checkDBError.Error())
