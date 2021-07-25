@@ -134,6 +134,12 @@ func (u *BaseModel) SearchByPagesWithKeys(entity interface{},
 // search custom tx
 func searchCustomTx(tx *gorm.DB, keys, keyOpts map[string]interface{}) {
 	compareOpt := map[string]string{">": ">", "<": "<", ">=": ">=", "<=": "<=", "=": "="}
+	//set transaction
+	transactionOpt := "or"
+	if _, ok := keyOpts["searchKeyOpt"]; ok {
+		transactionOpt = keyOpts["searchKeyOpt"].(string)
+	}
+	//search with like
 	for k, v := range keys {
 		usingLike := true
 		// set tx
@@ -143,9 +149,13 @@ func searchCustomTx(tx *gorm.DB, keys, keyOpts map[string]interface{}) {
 				usingLike = false
 			}
 		}
-		// no using like
+		//using like
 		if usingLike {
-			tx.Where(k+" LIKE ?", "%"+v.(string)+"%")
+			if transactionOpt == "or" {
+				tx.Where("").Or(k+" LIKE ?", "%"+v.(string)+"%")
+			} else {
+				tx.Where(k+" LIKE ?", "%"+v.(string)+"%")
+			}
 		}
 	}
 }

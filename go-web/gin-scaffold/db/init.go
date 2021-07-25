@@ -1,7 +1,6 @@
 package db
 
 import (
-	"errors"
 	"gin-scaffold/util"
 	"log"
 	"os"
@@ -70,7 +69,7 @@ func DBInit() {
 	//db config init
 	dsn, dbName := DBConfigInit()
 	// db dsn
-	err := errors.New("connect database error !")
+	var err error
 	// set db log level
 	logLevel := logger.Info
 	dbLogMode := os.Getenv("DB_LOGMODE")

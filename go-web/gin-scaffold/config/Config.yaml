@@ -11,7 +11,7 @@ DB_USER: 'root'
 # default db name
 DB_PASSWD: 'root123'
 # db log
-DB_LOGMODE: 'Warn'
+DB_LOGMODE: 'Info'
 # debug mode
 DEBUG_MODE: true
 # Log Level

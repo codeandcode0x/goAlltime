@@ -221,12 +221,44 @@ func (uc *UserController) SearchUsersByKeys(c *gin.Context) {
 		pageSizeInt, _ = strconv.Atoi(pageSize)
 	}
 
+	//search option
 	keys := make(map[string]interface{})
 	keyOpts := make(map[string]interface{})
+	//get search key
+	searchKey, searchKeyExist := c.GetQuery("searchKey")
+	if searchKeyExist {
+		keys["name"] = searchKey
+		keys["email"] = searchKey
+		keys["age"] = searchKey
+		keys["role"] = searchKey
+		log.Println("000000000", keys)
+	} else {
+		//search key
+		name, nameExist := c.GetQuery("name")
+		if nameExist {
+			keys["name"] = name
+		}
 
-	name, nameExist := c.GetQuery("name")
-	if nameExist {
-		keys["name"] = name
+		email, emailExist := c.GetQuery("email")
+		if emailExist {
+			keys["email"] = email
+		}
+
+		age, ageExist := c.GetQuery("age")
+		if ageExist {
+			keys["age"] = age
+		}
+
+		role, roleExist := c.GetQuery("role")
+		if roleExist {
+			keys["role"] = role
+		}
+	}
+
+	//search value options
+	searchKeyOpt, searchKeyOptExist := c.GetQuery("searchKeyOpt")
+	if searchKeyOptExist {
+		keyOpts["searchKey"] = searchKeyOpt
 	}
 
 	nameOpt, nameOptExist := c.GetQuery("nameOpt")
@@ -234,29 +266,14 @@ func (uc *UserController) SearchUsersByKeys(c *gin.Context) {
 		keyOpts["name"] = nameOpt
 	}
 
-	email, emailExist := c.GetQuery("email")
-	if emailExist {
-		keys["email"] = email
-	}
-
 	emailOpt, emailOptExist := c.GetQuery("emailOpt")
 	if emailOptExist {
 		keyOpts["email"] = emailOpt
 	}
 
-	age, ageExist := c.GetQuery("age")
-	if ageExist {
-		keys["age"] = age
-	}
-
 	ageOpt, ageOptExist := c.GetQuery("ageOpt")
 	if ageOptExist {
 		keyOpts["age"] = ageOpt
-	}
-
-	role, roleExist := c.GetQuery("role")
-	if roleExist {
-		keys["role"] = role
 	}
 
 	roleOpt, roleOptExist := c.GetQuery("roleOpt")
@@ -398,6 +415,7 @@ func (uc *UserController) CreateUser(c *gin.Context) {
 		MemberNumber: sql.NullString{},
 		BaseModel:    model.BaseModel{},
 	}
+
 	errCreate := uc.getCtl().Service.CreateUser(user)
 	if errCreate != nil {
 		c.JSON(http.StatusOK, gin.H{
@@ -406,11 +424,7 @@ func (uc *UserController) CreateUser(c *gin.Context) {
 		})
 	}
 
-	// c.JSON(http.StatusOK, gin.H{
-	// 	"code": 0,
-	// 	"data": user,
-	// })
-
+	//redirect
 	c.Redirect(http.StatusMovedPermanently, "/users")
 }
 
@@ -426,7 +440,6 @@ func (uc *UserController) UpdateUser(c *gin.Context) {
 
 	uidUint64, errConv := strconv.ParseUint(uid, 10, 64)
 	if errConv != nil {
-		// panic(" get uid error !")
 		util.SendError(c, "get uid error !")
 		return
 	}
