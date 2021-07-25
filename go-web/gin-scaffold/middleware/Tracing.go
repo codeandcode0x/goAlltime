@@ -30,6 +30,5 @@ func Tracing() gin.HandlerFunc {
 		// deliver parent context
 		c.Set("parentCtx", pctx)
 		c.Next()
-		return
 	}
 }
