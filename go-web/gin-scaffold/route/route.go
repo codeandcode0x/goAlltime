@@ -40,12 +40,12 @@ func DefinitionRoute(router *gin.Engine) {
 		auth.GET("/", userController.UserHome)
 		auth.GET("/logout", userController.Logout)
 		// user
-		router.GET("/users", userController.GetAllUsers)
+		auth.GET("/users", userController.GetAllUsers)
 		auth.GET("/user/add", userController.AddUser) //web ui
-		router.GET("/user/search", userController.SearchUsersByKeys)
-		router.POST("/user/create", userController.CreateUser)
-		router.POST("/user/update", userController.UpdateUser)
-		router.POST("/user/delete", userController.DeleteUser)
+		auth.GET("/user/search", userController.SearchUsersByKeys)
+		auth.POST("/user/create", userController.CreateUser)
+		auth.POST("/user/update", userController.UpdateUser)
+		auth.POST("/user/delete", userController.DeleteUser)
 	}
 	// api doc
 	router.GET("/swagger/*any", ginSwagger.DisablingWrapHandler(swaggerFiles.Handler, "USE_SWAGGER"))
