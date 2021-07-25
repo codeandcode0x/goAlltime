@@ -8,6 +8,7 @@ import (
 	"gin-scaffold/model"
 	"gin-scaffold/service"
 	"gin-scaffold/util"
+	"log"
 	"net/http"
 	"strconv"
 	"time"
@@ -136,7 +137,48 @@ func (uc *UserController) GetAllUsers(c *gin.Context) {
 		pageSizeInt, _ = strconv.Atoi(pageSize)
 	}
 
-	users, err := uc.getCtl().Service.FindAllUserByPages(currentPageInt, pageSizeInt, &totalRows)
+	// data option setting
+	dataOrder, dataOrderExist := c.GetQuery("dataOrder")
+	if !dataOrderExist {
+		dataOrder = "id desc"
+	}
+
+	dataSelect, dataSelectExist := c.GetQuery("dataSelect")
+	if !dataSelectExist {
+		dataSelect = ""
+	}
+
+	dataWhereMap := map[string]interface{}{}
+	dataWhere, dataWhereExist := c.GetQuery("dataWhere")
+	if dataWhereExist {
+		err := json.Unmarshal([]byte(dataWhere), &dataWhereMap)
+		if err != nil {
+			util.SendError(c, err.Error())
+			return
+		}
+	}
+
+	dataLimitInt := 0
+	dataLimit, dataLimitExist := c.GetQuery("dataLimit")
+	if dataLimitExist {
+		dataLimitInt, _ = strconv.Atoi(dataLimit)
+	}
+
+	daoOpt := model.DAOOption{
+		Select: dataSelect,
+		Order:  dataOrder,
+		Where:  dataWhereMap, //map[string]interface{}{},
+		Limit:  dataLimitInt,
+	}
+
+	users, err := uc.getCtl().Service.FindAllUserByPagesWithKeys(
+		map[string]interface{}{},
+		map[string]interface{}{},
+		currentPageInt,
+		pageSizeInt,
+		&totalRows,
+		daoOpt)
+
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"code":  -1,
@@ -150,7 +192,7 @@ func (uc *UserController) GetAllUsers(c *gin.Context) {
 		totalPages = totalRows / int64(pageSizeInt)
 	}
 
-	c.HTML(http.StatusOK, "index.tmpl", gin.H{
+	c.HTML(http.StatusOK, "users.tmpl", gin.H{
 		"title": "用户管理",
 		"users": users,
 		"pages": util.Pagination{
@@ -274,15 +316,16 @@ func (uc *UserController) SearchUsersByKeys(c *gin.Context) {
 		totalPages = totalRows / int64(pageSizeInt)
 	}
 
-	util.SendMessage(c, util.Message{
-		Code:    0,
-		Message: "OK",
-		Data:    users,
-		Page: util.Pagination{
-			PageSize:    pageSizeInt,
-			CurrentPage: currentPageInt,
-			TotalRows:   totalRows,
-			TotalPages:  totalPages,
+	c.HTML(http.StatusOK, "users.tmpl", gin.H{
+		"title": "用户管理",
+		"users": users,
+		"pages": util.Pagination{
+			PageSize:        pageSizeInt,
+			CurrentPage:     currentPageInt,
+			TotalRows:       totalRows,
+			TotalPages:      totalPages,
+			PreCurrentPage:  currentPageInt - 1,
+			NextCurrentPage: currentPageInt + 1,
 		},
 	})
 }
@@ -317,7 +360,7 @@ func (uc *UserController) GetUserByID(c *gin.Context) {
 
 // add user tmpl
 func (uc *UserController) AddUser(c *gin.Context) {
-	c.HTML(http.StatusOK, "add.tmpl", gin.H{
+	c.HTML(http.StatusOK, "user_add.tmpl", gin.H{
 		"title": "添加用户",
 	})
 }
@@ -363,10 +406,12 @@ func (uc *UserController) CreateUser(c *gin.Context) {
 		})
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"code": 0,
-		"data": user,
-	})
+	// c.JSON(http.StatusOK, gin.H{
+	// 	"code": 0,
+	// 	"data": user,
+	// })
+
+	c.Redirect(http.StatusMovedPermanently, "/users")
 }
 
 // update user
@@ -381,7 +426,9 @@ func (uc *UserController) UpdateUser(c *gin.Context) {
 
 	uidUint64, errConv := strconv.ParseUint(uid, 10, 64)
 	if errConv != nil {
-		panic(" get uid error !")
+		// panic(" get uid error !")
+		util.SendError(c, "get uid error !")
+		return
 	}
 
 	user, err := uc.getCtl().Service.FindUserById(uidUint64)
@@ -389,17 +436,38 @@ func (uc *UserController) UpdateUser(c *gin.Context) {
 		panic(" get user error !")
 	}
 
-	name := c.PostForm("name")
-	passwd := c.PostForm("passwd")
-	email := c.PostForm("email")
-	age, _ := strconv.Atoi(c.PostForm("age"))
+	//update data
+	updateDataEnabled, updateDataExist := c.GetPostForm("updatedata")
+	if updateDataExist && updateDataEnabled == "true" {
+		c.HTML(http.StatusOK, "user_update.tmpl", gin.H{
+			"title": "更新用户",
+			"user":  user,
+		})
+		return
+	}
 
 	user.ID = uidUint64
-	user.Name = name
-	user.Password = passwd
-	user.Email = email
-	user.Age = age
+	name, nameExist := c.GetPostForm("name")
+	if nameExist {
+		user.Name = name
+	}
 
+	email, emailExist := c.GetPostForm("email")
+	if emailExist {
+		user.Email = email
+	}
+
+	age, ageExist := c.GetPostForm("age")
+	if ageExist {
+		ageInt, _ := strconv.Atoi(age)
+		user.Age = ageInt
+	}
+
+	role, roleExist := c.GetPostForm("role")
+	if roleExist {
+		user.Role = role
+	}
+	//update user
 	rowsAffected, updateErr := uc.getCtl().Service.UpdateUser(uidUint64, user)
 	if updateErr != nil {
 		c.JSON(http.StatusOK, gin.H{
@@ -408,10 +476,14 @@ func (uc *UserController) UpdateUser(c *gin.Context) {
 		})
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"code": 0,
-		"data": rowsAffected,
-	})
+	// c.JSON(http.StatusOK, gin.H{
+	// 	"code": 0,
+	// 	"data": rowsAffected,
+	// })
+
+	log.Println("rows affected: ", rowsAffected)
+	//redirect
+	c.Redirect(http.StatusMovedPermanently, "/users")
 }
 
 func (uc *UserController) DeleteUser(c *gin.Context) {
@@ -437,8 +509,12 @@ func (uc *UserController) DeleteUser(c *gin.Context) {
 		})
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"code": 0,
-		"data": rowsAffected,
-	})
+	// c.JSON(http.StatusOK, gin.H{
+	// 	"code": 0,
+	// 	"data": rowsAffected,
+	// })
+
+	log.Println("rows affected: ", rowsAffected)
+	//redirect
+	c.Redirect(http.StatusMovedPermanently, "/users")
 }

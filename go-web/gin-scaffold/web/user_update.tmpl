@@ -1,0 +1,60 @@
+{{template "header"}}
+
+<div class="container">
+
+  
+  <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+  <h1 class="display-4">更新用户</h1>
+  <p class="lead"></p>
+  </div>
+
+  <div class=" mb-3">
+    <div class=" mb-4">
+      <div class="col-12 col-md">
+       <form action="/user/update" method="post" class="form-horizontal" role="form" enctype="application/x-www-form-urlencoded">
+          <input type="hidden" name="id" id="id" value="{{ .user.ID }}">
+          <div class="form-group">
+            <label for="name" class="col-sm-2 control-label">姓名</label>
+            <div class="col-sm-12">
+              <input type="text" class="form-control" id="name" name="name" value="{{ .user.Name }}">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="email" class="col-sm-2 control-label">邮箱</label>
+            <div class="col-sm-12">
+              <input type="text" class="form-control" id="email" name="email" value="{{ .user.Email }}">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="email" class="col-sm-2 control-label">角色</label>
+            <div class="col-sm-12">
+              <input type="text" class="form-control" id="role" name="role" value="{{ .user.Role }}">
+            </div>
+          </div>
+
+         <!--  <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox"> 请记住我
+                </label>
+              </div>
+            </div>
+          </div> -->
+
+          <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-12">
+              <button type="submit" class="btn btn-sm btn-block btn-outline-primary">提 交</button>
+            </div>
+          </div>
+       </form>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+{{template "footer"}}
+

@@ -61,7 +61,7 @@ func DBConfigInit() (string, string) {
 	log.Println("db connecting ...", dbName, dbHost)
 
 	// db dsn
-	dsn := dbUser + ":" + dbPasswd + "@tcp(" + dbHost + ":" + dbPort + ")/?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn := dbUser + ":" + dbPasswd + "@tcp(" + dbHost + ":" + dbPort + ")/" + dbName + "?charset=utf8mb4&parseTime=True&loc=Local"
 	return dsn, dbName
 }
 
@@ -123,9 +123,9 @@ func DBInit() {
 }
 
 //check db
-func CheckDB(conn *gorm.DB, dbName string) bool {
+func CheckDB(Conn *gorm.DB, dbName string) bool {
 	checkDB := "select * from information_schema.SCHEMATA where SCHEMA_NAME = '" + dbName + "'; "
-	tx := conn.Raw(checkDB)
+	tx := Conn.Raw(checkDB)
 	rows, _ := tx.Rows()
 	defer rows.Close()
 	checkDBError := tx.Error
@@ -144,5 +144,6 @@ func CheckDB(conn *gorm.DB, dbName string) bool {
 		log.Println(useError.Error())
 		return false
 	}
+
 	return true
 }
