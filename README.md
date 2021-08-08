@@ -1,15 +1,17 @@
-# goAlltime
+[TOC]
+
+# 简介
 goAlltime 是一个学习 golang (新手入门级) 的项目。它包含了一些 数据结构与算法、Web、Cli、Lib 包等脚手架 …
 
+# Projects Catalog
 ## Algorithms and Data Structures
-算法与数据结构 Go
-
+### 算法与数据结构 Go
 [algo data structures](https://github.com/codeandcode0x/algo-data-structures)
 
 
 ## Web
 
-## Gin 脚手架
+### Gin 脚手架
 Go 语言有非常的优秀的特性 (比如高并发、原生支持协程、泛型等等), 同时也贡献了非常多项目(可以 https://awesome-go.com/ 一览)，在 Web 开发这块也有非常多优秀的框架，如 Gin、Beego、Iris、Echo、Revel 等. Top Go Web Frameworks
 
 **为了快速使用 Gin, 我提供了 [Gin Scaffold](go-web/gin-scaffold/README.md) 程序。 提供如下功能:**
@@ -25,7 +27,7 @@ Go 语言有非常的优秀的特性 (比如高并发、原生支持协程、泛
 - K8s Manifest
 - Helm
 
-### ORM Interface 继承
+#### ORM Interface 继承
 设计 BaseModel, 在后面的业务 Model 继承这个 BaseModel 即可抽象 DAO interface
 ```go
 
@@ -74,7 +76,7 @@ type UserDAO interface {
 }
 ```
 
-### Http Timeout
+#### Http Timeout
 设计 TimeoutHandler middleware 来处理超时请求
 ```go
 const (
@@ -99,7 +101,7 @@ func DefinitionRoute(router *gin.Engine) {
 
 ```
 
-### 分布式链路 Jaeger
+#### 分布式链路 Jaeger
 引入 traceandtrace-go 实现 Tracing middleware, 上报链路信息到 jaeger
 ```go
 import (
@@ -138,7 +140,7 @@ func Tracing() gin.HandlerFunc {
 
 ```
 
-### 编译
+#### 编译
 
 ```sh
 cd /web/gin && ./docker/build.sh 
@@ -148,8 +150,8 @@ build.sh $1 $2 $3 可以传递三个参数
 - $2: repoUser ( docker repo username)
 - $3: repoHost ( docker repo host)
 
-### 运行
-#### docker compose
+#### 运行
+##### docker compose
 启动
 ```sh
  docker-compose --env-file deploy/config/.env -f docker/docker-compose.yml -p gin-scaffold  up
@@ -159,23 +161,25 @@ build.sh $1 $2 $3 可以传递三个参数
  docker-compose --env-file deploy/config/.env -f docker/docker-compose.yml -p gin-scaffold  down
 ```
 
-#### k8s manifest
+##### k8s manifest
 ```sh
 kubectl apply -f k8s/manifest --recursive / -R
 ```
-#### helm
+##### helm
 ```sh
 helm dep update k8s/helm/apps/web-app
 helm upgrade --install gin-scaffold  k8s/helm/apps/web-app
 ```
 
-### 总结
+#### 总结
 - gin 在 go web 上使用非常方便, 并且性能非常不错 
 - 使用 gin 脚手架可以快速构建开发项目
 
 
-## Cli tools 
-[cli scaffold](cli/cli-tools/cli-scaffold/README.md) <br>
+## Cli tools
+### scaffold
+[cli scaffold](cli/cli-tools/cli-scaffold/README.md)
+### cobra
 [cobra](github.com/spf13/cobra)
 
 ## Golang Open Source Projects
