@@ -1,4 +1,5 @@
-#!/usr/bin/env bash
+#!/bin/bash
+
 set -eo pipefail
 
 appVersion=$1
@@ -22,7 +23,7 @@ function build() {
 	version=$1
 	repoUser=$2
 	repoHost=$3
-	docker build -t $repoHost/$repoUser/gin-scaffold:$version -f _deploy/docker/Dockerfile  --no-cache ./
+	docker build -t $repoHost/$repoUser/gin-scaffold:$version -f docker/projects/golang/gin-scaffold/Dockerfile  --no-cache ./
 }
 
 # prune image
@@ -49,3 +50,5 @@ function main() {
 
 # run main
 main $appVersion $repoUser $repoHost
+
+export TICKET_VERSION=$appVersion

@@ -1,0 +1,9 @@
+# Default values for saas.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# global env
+global:
+  # resource
+  resourceRequest:
+    enabled: true

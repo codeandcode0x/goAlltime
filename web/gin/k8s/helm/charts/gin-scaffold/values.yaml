@@ -1,0 +1,16 @@
+# Default values for saas.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# global env
+global:
+  docker:
+    repoHost: docker.io
+  # resource
+  resourceRequest:
+    enabled: true
+
+# image
+image:
+  ticketManager: "roandocker/gin-scaffold:1.0.0"
+  k8sWaitFor: "roandocker/k8s-wait-for:1.0.0"

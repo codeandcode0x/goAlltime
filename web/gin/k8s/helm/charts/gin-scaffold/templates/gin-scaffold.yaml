@@ -1,0 +1,109 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    dependOn: gin-scaffold
+  name: gin-scaffold
+  labels:
+    version: {{ .Chart.AppVersion }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gin-scaffold
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        proxy.istio.io/config: |
+          holdApplicationUntilProxyStarts: true
+        sidecar.istio.io/proxyCPU: "10m"
+        sidecar.istio.io/proxyCPULimit: "150m"
+        sidecar.istio.io/proxyMemory: "32Mi"
+        sidecar.istio.io/proxyMemoryLimit: "2Gi"
+        sidecar.istio.io/inject: "true"
+        prometheus.io/probe: "true"
+      labels:
+        app: gin-scaffold
+        version: {{ .Chart.AppVersion }}
+    spec:
+      initContainers:
+      - name: wait-for-onezone
+        image: "{{ .Values.global.docker.repoHost }}/{{ .Values.image.k8sWaitFor }}"
+        imagePullPolicy: IfNotPresent
+        args:
+          - "pod"
+          - "lapp=mariadb"
+      containers:
+      - name: gin-scaffold
+        env:
+        - name: DB_HOST
+          value: mariadb
+        - name: DB_PORT
+          value : "3306"
+        - name: DB_USER
+          value: root
+        - name: DB_PASSWD
+          value: root123
+        - name: DB_DATABASE
+          value: ticket
+        - name: DB_LOGMODE
+          value: "true"
+        - name: TRACE_SAMPLER_TYPE
+          value: "probabilistic"
+        - name: TRACE_SAMPLER_PARAM
+          value: "1"
+        - name: TRACE_ENDPOINT
+          value: "http://jaeger-collector.istio-system:14268/api/traces"
+        # - name: TRACE_AGENT_HOST
+        #   value: ""
+        - name: TRACE_REPORTER_LOG_SPANS
+          value: "true"
+        image: "{{ .Values.global.docker.repoHost }}/{{ .Values.image.ticketManager }}"
+        imagePullPolicy: Always
+        livenessProbe:
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          tcpSocket:
+            port: 8080
+          timeoutSeconds: 3
+          failureThreshold: 30
+        ports:
+        - containerPort: 8080
+        readinessProbe:
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          tcpSocket:
+            port: 8080
+          timeoutSeconds: 3
+          failureThreshold: 30
+        resources:
+        {{- if .Values.global.resourceRequest.enabled }}
+          limits:
+            cpu: 200m
+            memory: 680Mi
+          requests:
+            cpu: 100m
+            memory: 256Mi
+        {{- end }}
+      enableServiceLinks: false
+      # imagePullSecrets:
+      # - name: 
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gin-scaffold
+  annotations:
+    prometheus.io/probe: "true"
+spec:
+  ports:
+  - name: "http-8080"
+    port: 8080
+    targetPort: 8080
+  selector:
+    app: gin-scaffold
+  type: ClusterIP
+status:
+  loadBalancer: {}
+...

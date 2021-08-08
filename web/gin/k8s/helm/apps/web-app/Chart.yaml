@@ -1,0 +1,16 @@
+apiVersion: v2
+name: ticket-app
+description: ticket app
+type: application
+version: 1.0.0
+appVersion: "1.0.0"
+
+
+# dependencies
+dependencies:
+  - name: mariadb
+    version: 1.0.0
+    repository: "file://../../charts/mariadb"
+  - name: gin-scaffold
+    version: 1.0.0
+    repository: "file://../../charts/gin-scaffold"

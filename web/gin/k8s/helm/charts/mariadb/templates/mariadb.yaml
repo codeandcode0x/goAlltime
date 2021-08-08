@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mariadb
+  labels:
+    version: {{ .Chart.AppVersion }}
+spec:
+  updateStrategy:
+    type: RollingUpdate
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mariadb
+  serviceName: "mariadb"
+  template:
+    metadata:
+      labels:
+        app: mariadb
+    spec:
+      containers:
+      - name: mariadb
+        env:
+        - name: MARIADB_ROOT_PASSWORD
+          value : root123
+        image: mariadb:10.2.38
+        imagePullPolicy: Always
+        livenessProbe:
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          tcpSocket:
+            port: 3306
+          timeoutSeconds: 3
+        ports:
+        - containerPort: 3306
+        readinessProbe:
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          tcpSocket:
+            port: 3306
+          timeoutSeconds: 3
+        resources:
+          limits:
+            cpu: 350m
+            memory: 680Mi
+          requests:
+            cpu: 50m
+            memory: 256Mi
+      enableServiceLinks: false
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mariadb
+spec:
+  ports:
+  - name: "tcp-3306"
+    port: 3306
+    targetPort: 3306
+  selector:
+    app: mariadb
+  type: ClusterIP
+status:
+  loadBalancer: {}
+...

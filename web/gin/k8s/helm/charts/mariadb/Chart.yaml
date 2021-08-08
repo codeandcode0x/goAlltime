@@ -1,0 +1,8 @@
+apiVersion: v2
+name: mariadb
+description: mariadb
+type: application
+version: 10.2.38
+appVersion: "10.2.38"
+
+

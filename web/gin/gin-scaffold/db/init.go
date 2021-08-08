@@ -60,7 +60,7 @@ func DBConfigInit() (string, string) {
 	log.Println("db connecting ...", dbName, dbHost)
 
 	// db dsn
-	dsn := dbUser + ":" + dbPasswd + "@tcp(" + dbHost + ":" + dbPort + ")/" + dbName + "?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn := dbUser + ":" + dbPasswd + "@tcp(" + dbHost + ":" + dbPort + ")"
 	return dsn, dbName
 }
 
@@ -91,19 +91,19 @@ func DBInit() {
 	)
 
 	//get conn
-	Conn, err = gorm.Open(mysql.Open(dsn), &gorm.Config{
+	//check db
+	status := CheckDB(dbName, dsn+"/?charset=utf8mb4&parseTime=True&loc=Local")
+	if !status {
+		return
+	}
+
+	Conn, err = gorm.Open(mysql.Open(dsn+"/"+dbName+"?charset=utf8mb4&parseTime=True&loc=Local"), &gorm.Config{
 		Logger: DBLogger,
 	})
 
 	//connect err
 	if err != nil {
 		panic(err.Error())
-	}
-
-	//check db
-	status := CheckDB(Conn, dbName)
-	if !status {
-		return
 	}
 
 	//sql db
@@ -122,7 +122,8 @@ func DBInit() {
 }
 
 //check db
-func CheckDB(Conn *gorm.DB, dbName string) bool {
+func CheckDB(dbName, dsn string) bool {
+	Conn, _ = gorm.Open(mysql.Open(dsn))
 	checkDB := "select * from information_schema.SCHEMATA where SCHEMA_NAME = '" + dbName + "'; "
 	tx := Conn.Raw(checkDB)
 	rows, _ := tx.Rows()
@@ -137,12 +138,12 @@ func CheckDB(Conn *gorm.DB, dbName string) bool {
 		Conn.Exec("CREATE DATABASE IF NOT EXISTS `" + dbName + "` DEFAULT CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_unicode_ci;")
 	}
 
-	//use db
-	useError := Conn.Exec("use " + dbName).Error
-	if useError != nil {
-		log.Println(useError.Error())
+	sqlDB, sqlErr := Conn.DB()
+	if sqlErr != nil {
+		log.Println(sqlErr.Error())
 		return false
 	}
+	sqlDB.Close()
 
 	return true
 }
