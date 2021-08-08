@@ -29,44 +29,17 @@ services:
       start_period: 40s
 
 
-  # init data job
-  initdata-job:
-    depends_on:
-      - mariadb
-    # depends_on:
-    #   mariadb:
-    #     condition: service_healthy
-    image: ${REPO_HOST}/roandocker/initdata-job:${IMAGE_TAG}
-    environment: 
-      MARIADB_SERVICE_HOST: "mariadb"
-      SQL_FILE: "istioAlltime"
-      GIT_BRANCH: "master"
-      GITURL: "github.com/codeandcode0x/istioAlltime.git"
-      GITUSER: ""
-      GITPASSWD: ""
-      MIGRATION: "MARIADB_SERVICE_HOST"
-      DBUSER: "root"
-      DBPASSWD: "root123"
-      INTERVAL_TIME: "5"
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
-        max_attempts: 1
-    
-
   # ticket backend
-  ticket-manager:
+  gin-scaffold:
     depends_on:
-      - initdata-job
       - mariadb
     # depends_on:
       # initdata-job:
       #   condition: service_started
       # mariadb:
       #     condition: service_healthy
-    image: ${REPO_HOST}/roandocker/ticket-manager:${IMAGE_TAG}
-    command: /bin/sh -c "./ticket-manager"
+    image: ${REPO_HOST}/roandocker/gin-scaffold:${IMAGE_TAG}
+    command: /bin/sh -c "./gin-scaffold"
     ports:
       - 8080:8080
     environment:
@@ -74,7 +47,7 @@ services:
       DB_PORT: "3306"
       DB_USER: root
       DB_PASSWD: root123
-      DB_DATABASE: ticket
+      DB_DATABASE: gin_scaffold
       DB_LOGMODE: "true"
     deploy:
       replicas: 1
@@ -90,40 +63,6 @@ services:
           memory: 150M
     # healthcheck:
     #   test: ["CMD-SHELL", "curl -f http://localhost:8080/healthz || exit 1"]
-    #   interval: 5s
-    #   timeout: 3s
-    #   retries: 3
-    #   start_period: 40s
-
-
-  # ticket frontend
-  ticket-fronted:
-    depends_on:
-      - ticket-manager
-    # depends_on:
-      # ticket-manager:
-      #   condition: service_healthy
-    image: ${REPO_HOST}/roandocker/ticket-frontend:${IMAGE_TAG}
-    command: /bin/sh -c "java -jar /root/ticket-frontend.jar"
-    ports:
-      - 8090:8090
-    environment:
-      DB_HOST: mariadb
-      TICKET_MANAGER_HOST: http://ticket-manager:8080
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
-        max_attempts: 3
-      resources:
-        limits:
-          cpus: '0.50'
-          memory: 300M
-        reservations:
-          cpus: '0.25'
-          memory: 150M
-    # healthcheck:
-    #   test: ["CMD-SHELL", "curl -f http://localhost:8090/actuator/health || exit 1"]
     #   interval: 5s
     #   timeout: 3s
     #   retries: 3

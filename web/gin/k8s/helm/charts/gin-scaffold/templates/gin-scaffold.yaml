@@ -59,7 +59,7 @@ spec:
         #   value: ""
         - name: TRACE_REPORTER_LOG_SPANS
           value: "true"
-        image: "{{ .Values.global.docker.repoHost }}/{{ .Values.image.ticketManager }}"
+        image: "{{ .Values.global.docker.repoHost }}/{{ .Values.image.ginScaffold }}"
         imagePullPolicy: Always
         livenessProbe:
           initialDelaySeconds: 30

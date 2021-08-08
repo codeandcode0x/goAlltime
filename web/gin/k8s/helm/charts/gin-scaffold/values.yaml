@@ -12,5 +12,5 @@ global:
 
 # image
 image:
-  ticketManager: "roandocker/gin-scaffold:1.0.0"
+  ginScaffold: "roandocker/gin-scaffold:latest"
   k8sWaitFor: "roandocker/k8s-wait-for:1.0.0"

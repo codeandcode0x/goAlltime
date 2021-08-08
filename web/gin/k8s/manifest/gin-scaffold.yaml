@@ -36,7 +36,7 @@ spec:
           value: gin_scaffold
         - name: DB_LOGMODE
           value: "true"
-        image: roandocker/gin-scaffold:1.0.0
+        image: roandocker/gin-scaffold:latest
         imagePullPolicy: Always
         livenessProbe:
           initialDelaySeconds: 30

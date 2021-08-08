@@ -144,6 +144,15 @@ build.sh $1 $2 $3 可以传递三个参数
 
 ### 运行
 #### docker compose
+启动
+```sh
+ docker-compose --env-file deploy/config/.env -f docker/docker-compose.yml -p gin-scaffold  up
+```
+卸载
+```sh
+ docker-compose --env-file deploy/config/.env -f docker/docker-compose.yml -p gin-scaffold  down
+```
+
 #### k8s manifest
 #### helm
 
