@@ -1,34 +1,32 @@
 - [简介](#简介)
 - [Projects Catalog](#projects-catalog)
-	- [1. Algorithms and Data Structures](#1-algorithms-and-data-structures)
-		- [算法与数据结构 Go](#算法与数据结构-go)
-	- [2. Web](#2-web)
+	- [1. 算法与数据结构](#1-算法与数据结构)
+		- [Algorithms and Data Structures Go](#algorithms-and-data-structures-go)
+	- [2. Web 网络编程](#2-web-网络编程)
 		- [Gin 脚手架](#gin-脚手架)
 			- [ORM Interface 继承](#orm-interface-继承)
 			- [Http Timeout](#http-timeout)
 			- [分布式链路 Jaeger](#分布式链路-jaeger)
 			- [编译](#编译)
 			- [运行](#运行)
-				- [docker compose](#docker-compose)
-				- [k8s manifest](#k8s-manifest)
-				- [helm](#helm)
 			- [总结](#总结)
-	- [3. Cli tools](#3-cli-tools)
+	- [3. Cli 工具](#3-cli-工具)
 		- [scaffold](#scaffold)
 		- [cobra](#cobra)
-	- [4. Golang Open Source Projects](#4-golang-open-source-projects)
+- [Appendix](#appendix)
+	- [Golang Open Source Projects](#golang-open-source-projects)
 - [Maintainer](#maintainer)
 
 # 简介
 goAlltime 是一个学习 golang (新手入门级) 的项目。它包含了一些 数据结构与算法、Web、Cli、Lib 包等脚手架 …
 
 # Projects Catalog
-## 1. Algorithms and Data Structures
-### 算法与数据结构 Go
+## 1. 算法与数据结构
+### Algorithms and Data Structures Go
 [algo data structures](https://github.com/codeandcode0x/algo-data-structures)
 
 
-## 2. Web
+## 2. Web 网络编程
 
 ### Gin 脚手架
 Go 语言有非常的优秀的特性 (比如高并发、原生支持协程、泛型等等), 同时也贡献了非常多项目(可以 https://awesome-go.com/ 一览)，在 Web 开发这块也有非常多优秀的框架，如 Gin、Beego、Iris、Echo、Revel 等. Top Go Web Frameworks
@@ -170,7 +168,7 @@ build.sh $1 $2 $3 可以传递三个参数
 - $3: repoHost ( docker repo host)
 
 #### 运行
-##### docker compose
+- docker compose
 启动
 ```sh
  docker-compose --env-file deploy/config/.env -f docker/docker-compose.yml -p gin-scaffold  up
@@ -180,11 +178,11 @@ build.sh $1 $2 $3 可以传递三个参数
  docker-compose --env-file deploy/config/.env -f docker/docker-compose.yml -p gin-scaffold  down
 ```
 
-##### k8s manifest
+- k8s manifest
 ```sh
 kubectl apply -f k8s/manifest --recursive / -R
 ```
-##### helm
+- helm
 ```sh
 helm dep update k8s/helm/apps/web-app
 helm upgrade --install gin-scaffold  k8s/helm/apps/web-app
@@ -195,13 +193,14 @@ helm upgrade --install gin-scaffold  k8s/helm/apps/web-app
 - 使用 gin 脚手架可以快速构建开发项目
 
 
-## 3. Cli tools
+## 3. Cli 工具
 ### scaffold
 [cli scaffold](cli/cli-tools/cli-scaffold/README.md)
 ### cobra
 [cobra](github.com/spf13/cobra)
 
-## 4. Golang Open Source Projects
+# Appendix
+## Golang Open Source Projects
 [golang open source projects](https://github.com/codeandcode0x/golang-open-source-projects) 
 
 # Maintainer
